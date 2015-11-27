@@ -1,48 +1,71 @@
-def knn(data, k=3):
+import numpy as np
+from pyspark import SparkContext
+from utils import eucdist, vote, find_neighbours, get_confusion_matrix
 
-    import numpy as np
-    from pyspark import SparkContext
-    from utils import eucdist, vote, find_neighbours
+class KNN(object):
 
-    sc = SparkContext()
+    '''
+        KNN for PySpark
+    '''
 
-    # Read file
-    img = sc.textFile(data)
-    imgRDD = img.map(lambda s: [int(t) for t in s.split()])
+    def __init__(self, data, k=1):
+        '''
+            Initialize a KNN object
+            data: RDD Type
+            data format: (index, class, features)
+        '''
+        self.k = int(k)
+        self.data = data
 
-    # Adds the index
-    RDDind = imgRDD.zipWithIndex()
+    def update_k(self, k):
+        self.k = int(k)
 
-    # Switches positions of index and data
-    indRDD = RDDind.map(lambda (data,index):(index,data))
+    def get_pair_distance(self):
+        # Creates key value pair where key is index1
+        pairs = self.data.cartesian(self.data).filter(lambda (x1, x2): x1[0] != x2[0])
+        #Applies euclidean distance function to all pairs
+        imgED = pairs.map(eucdist)
+        # Creates key value pair where key is index1
+        KVpair = imgED.map(lambda x: (x[0],x[1:]))
+        # Group distances for each key
+        distRDD = KVpair.groupByKey().mapValues(list)
 
-    # Organizes into index,class,features
-    indClassFeat = indRDD.map(lambda (index,data): (index,data[-1],data[:-1]))
+        return distRDD
 
-    # Index, Class; Index, Feature
-    indClass = indClassFeat.map(lambda (index, cl, features) : (index, cl))
-    indFeat = indClassFeat.map(lambda (index, cl, features) : (index, features))
+    def get_k_nearest_neighbours(self):
+        # Find k nearest neighbor for each key
+        # for each k, returns a list of tuples; each tuple (neighbour_index, neighbour_label)
+        distRDD = self.get_pair_distance()
+        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, self.k)))
+        return sortedDistRDD
 
-    # Creates all pairs of points
-    # Filter out the self-self pairs 
-    pairs = indClassFeat.cartesian(indClassFeat).filter(lambda (x1, x2): x1[0] != x2[0])
+    def train(self):
+        '''return confusion matrix'''
+        sortedDistRDD = self.get_k_nearest_neighbours()
+        # Predict -- Majority Voting
+        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns)))
+        # Get actual labels
+        actualClassRDD = self.data.map(lambda (index, cl, features) : (index, cl))
 
-    #Applies euclidean distance function to all pairs
-    imgED = pairs.map(eucdist)
+        pred_tuple, true_tuple = predictionRDD.collect(), actualClassRDD.collect()
+        pred, true = np.zeros(len(pred_tuple)), np.zeros(len(pred_tuple)) 
+        for i in range(len(pred)):
+            # Pred
+            idx, cl = pred_tuple[i]
+            pred[int(idx)] = int(cl)
+            # Actual
+            idx, cl =true_tuple[i]
+            true[int(idx)] = int(cl)
 
-    # Creates key value pair where key is index1
-    KVpair = imgED.map(lambda x: (x[0],x[1:]))
+        confusion_matrix = get_confusion_matrix(pred, true)
+        return confusion_matrix
 
-    # Group distances for each key
-    distRDD = KVpair.groupByKey().mapValues(list)
-
-    # Find k nearest neighbor for each key
-    # for each k, returns a list of tuples; each tuple (neighbour_index, neighbour_label)
-    sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr)))
-
-    # Predict -- Majority Voting
-    predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns)))
+    def test(self, point):
+        '''point should also be a RDD object'''
+        #TODO
 
 if __name__ == '__main__':
-    knn('./test.txt')
-
+    sc = SparkContext()
+    # Read file
+    img = sc.textFile(data)
+    knn = KNN(img)
