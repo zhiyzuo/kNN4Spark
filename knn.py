@@ -20,8 +20,8 @@ def knn(data, k=3):
     indClassFeat = indRDD.map(lambda (index,data): (index,data[-1],data[:-1]))
 
     # Index, Class; Index, Feature
-    indClass = indClassFeat.map(lambda (index, class, features) : (index, class))
-    indFeat = indClassFeat.map(lambda (index, class, features) : (index, features))
+    indClass = indClassFeat.map(lambda (index, cl, features) : (index, cl))
+    indFeat = indClassFeat.map(lambda (index, cl, features) : (index, features))
 
     # Creates all pairs of points
     # Filter out the self-self pairs 
