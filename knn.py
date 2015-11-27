@@ -1,3 +1,4 @@
+
 import numpy as np
 from pyspark import SparkContext
 from utils import eucdist, vote, find_neighbours, get_confusion_matrix
@@ -36,7 +37,8 @@ class KNN(object):
         # Find k nearest neighbor for each key
         # for each k, returns a list of tuples; each tuple (neighbour_index, neighbour_label)
         distRDD = self.get_pair_distance()
-        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, self.k)))
+        k = int(self.k)
+        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
         return sortedDistRDD
 
     def train(self):
@@ -47,7 +49,11 @@ class KNN(object):
         # Get actual labels
         actualClassRDD = self.data.map(lambda (index, cl, features) : (index, cl))
 
-        pred_tuple, true_tuple = predictionRDD.collect(), actualClassRDD.collect()
+        print predictionRDD.take(2)
+
+        pred_tuple = predictionRDD.collect()
+        true_tuple = actualClassRDD.collect()
+
         pred, true = np.zeros(len(pred_tuple)), np.zeros(len(pred_tuple)) 
         for i in range(len(pred)):
             # Pred
@@ -68,6 +74,14 @@ if __name__ == '__main__':
     sc = SparkContext()
     # Read file
     img = sc.textFile('./test.txt')
-    knn = KNN(img)
+    imgRDD = img.map(lambda s: [int(t) for t in s.split()])
+    # Adds the index
+    RDDind = imgRDD.zipWithIndex()
+    # Switches positions of index and data
+    indRDD = RDDind.map(lambda (data,index):(index,data))
+    # Organizes into index,class,features
+    indClassFeat = indRDD.map(lambda (index,data): (index,data[-1],data[:-1]))
+
+    knn = KNN(indClassFeat)
     knn.train()
 
