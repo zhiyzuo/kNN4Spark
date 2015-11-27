@@ -69,3 +69,6 @@ if __name__ == '__main__':
     # Read file
     img = sc.textFile(data)
     knn = KNN(img)
+    knn.train()
+
+
