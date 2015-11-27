@@ -67,8 +67,7 @@ class KNN(object):
 if __name__ == '__main__':
     sc = SparkContext()
     # Read file
-    img = sc.textFile(data)
+    img = sc.textFile('./test.txt')
     knn = KNN(img)
     knn.train()
-
 
