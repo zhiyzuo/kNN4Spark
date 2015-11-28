@@ -7,8 +7,9 @@ Test the code: `spark-submit knn.py`
 
 ##### To do List:
 
-* Instance Function test() -- done. worked well for weighted=False but gave ZeroDivisionError for weighted=True. Modified utils.py and no longer receiving ZeroDivisionError for weighted=True.
+* Testing training code -- done. worked well for weighted=False but gave ZeroDivisionError for weighted=True. Modified utils.py and no longer receiving ZeroDivisionError for weighted=True.
 * Do you think we should also store the wrong pixels so that we can go back to see the "hard samples"? -- this will be helpful when writing the report. Will add more substance to the report.
+* Instance Function test()
 
 #### Strategies employed so far:
 
