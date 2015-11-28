@@ -40,6 +40,10 @@ def vote(knns, weighted=False):
         if weighted:
             # weight inversely proportional to distance
             distance = float(n_i[-1])
+            # separate distance 0 due to ZeroDivisionError
+            if distance == 0:
+                pred_dict[this_label] += 1
+            else:
             pred_dict[this_label] += 1/distance 
 
         else:
