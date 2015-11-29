@@ -26,7 +26,7 @@ def get_confusion_matrix(pred, true, see=True):
 
     return confusion_matrix
 
-def vote(knns, weighted=False):
+def vote(knns, weighted=False, offset=1):
     '''
         Return predictions by voting
         Default: Equal weights for all neighbours
@@ -41,10 +41,8 @@ def vote(knns, weighted=False):
             # weight inversely proportional to distance
             distance = float(n_i[-1])
             # separate distance 0 due to ZeroDivisionError
-            if distance == 0:
-                pred_dict[this_label] += 1
-            else:
-            pred_dict[this_label] += 1/distance 
+            # Use offset to avoid zero denominator
+            pred_dict[this_label] += 1./(distance+offset)
 
         else:
             pred_dict[this_label] += 1
