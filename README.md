@@ -24,5 +24,6 @@ Test the code: `spark-submit knn.py`
 * Changing d -- pixel block size.
 * Parallelization -- HDFS/Spark/HPC
 * Algebra -- weighting option (I think this would count) -- thoughts?? -> I think this is reasonable (Zhiya Zuo).
+* What about changing distance metric? Do you think changing this will be considered as a strategy?
 
 
