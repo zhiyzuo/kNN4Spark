@@ -41,11 +41,11 @@ class KNN(object):
         sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
         return sortedDistRDD
 
-    def train(self):
+    def train(self, weighted=False, offset=1):
         '''return confusion matrix'''
         sortedDistRDD = self.get_k_nearest_neighbours()
         # Predict -- Majority Voting
-        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns)))
+        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, weighted, offset)))
         # Get actual labels
         actualClassRDD = self.data.map(lambda (index, cl, features) : (index, cl))
 
@@ -64,7 +64,7 @@ class KNN(object):
         confusion_matrix = get_confusion_matrix(pred, true)
         return confusion_matrix
 
-    def predict(self, other_data):
+    def predict(self, other_data, weighted=False, offset=1):
         '''
             Returns a RDD object which stores index and predictions
             @param
@@ -84,7 +84,7 @@ class KNN(object):
         # Find k Nearest Neighbours
         k = int(self.k)
         sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
-        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns)))
+        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, weighted, offset)))
         return predictionRDD
 
     def test(self, test_data, test_label):
@@ -124,8 +124,8 @@ if __name__ == '__main__':
     knn = KNN(indClassFeat)
     knn.train()
 
-    test_set = [[74, 85, 123, 0], [75, 90, 130, 1]]
-    t1 = test_point.zipWithIndex()
+    test_set = sc.parallelize([[74, 85, 123, 0], [75, 90, 130, 1]])
+    t1 = test_set.zipWithIndex()
     # Switches positions of index and data
     testDataRDD = t1.map(lambda (data,index):(index,data[:-1]))
     testLabelRDD = t1.map(lambda (data,index):(index,data[-1]))
