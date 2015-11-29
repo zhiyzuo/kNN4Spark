@@ -67,7 +67,7 @@ def find_neighbours(dist_array, k=1):
     # return near neighbours along with their labels
 
     # distinguish train and test
-    if len(dist_array) < 4:
+    if len(dist_array[0]) < 4:
         label_index = 0
     else:
         label_index = 1
