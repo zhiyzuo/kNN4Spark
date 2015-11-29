@@ -87,12 +87,12 @@ class KNN(object):
         predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns)))
         return predictionRDD
 
-    def test(self, test_data):
+    def test(self, test_data, test_label):
         '''test_data should also be a RDD object'''
         predictionRDD = self.predict(test_data)
 
         # Get actual labels
-        actualClassRDD = test_data.map(lambda (index, cl, features) : (index, cl))
+        actualClassRDD = test_label
 
         pred_tuple = predictionRDD.collect()
         true_tuple = actualClassRDD.collect()
@@ -123,4 +123,15 @@ if __name__ == '__main__':
 
     knn = KNN(indClassFeat)
     knn.train()
+
+    test_set = [[74, 85, 123, 0], [75, 90, 130, 1]]
+    t1 = test_point.zipWithIndex()
+    # Switches positions of index and data
+    testDataRDD = t1.map(lambda (data,index):(index,data[:-1]))
+    testLabelRDD = t1.map(lambda (data,index):(index,data[-1]))
+    print testDataRDD.collect()
+    print testLabelRDD.collect()
+
+    knn.predict(testDataRDD)
+    knn.test(testDataRDD, testLabelRDD)
 
