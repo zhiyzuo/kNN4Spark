@@ -49,8 +49,6 @@ class KNN(object):
         # Get actual labels
         actualClassRDD = self.data.map(lambda (index, cl, features) : (index, cl))
 
-        print predictionRDD.take(2)
-
         pred_tuple = predictionRDD.collect()
         true_tuple = actualClassRDD.collect()
 
@@ -66,9 +64,50 @@ class KNN(object):
         confusion_matrix = get_confusion_matrix(pred, true)
         return confusion_matrix
 
-    def test(self, point):
-        '''point should also be a RDD object'''
-        #TODO
+    def predict(self, other_data):
+        '''
+            Returns a RDD object which stores index and predictions
+            @param
+            other_data should also be a RDD object;
+            but it does NOT have class label for each sample
+            each item is stored as (index, features)
+        '''
+        # Create pair
+        pairs = other_data.cartesian(self.data)
+        # Applies euclidean distance function to all pairs
+        pointED = pairs.map(eucdist)
+        # Creates key value pair where key is index1
+        KVpair = pointED.map(lambda x: (x[0],x[1:]))
+        # Group distances for each key
+        distRDD = KVpair.groupByKey().mapValues(list)
+        
+        # Find k Nearest Neighbours
+        k = int(self.k)
+        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
+        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns)))
+        return predictionRDD
+
+    def test(self, test_data):
+        '''test_data should also be a RDD object'''
+        predictionRDD = self.predict(test_data)
+
+        # Get actual labels
+        actualClassRDD = test_data.map(lambda (index, cl, features) : (index, cl))
+
+        pred_tuple = predictionRDD.collect()
+        true_tuple = actualClassRDD.collect()
+
+        pred, true = np.zeros(len(pred_tuple)), np.zeros(len(pred_tuple)) 
+        for i in range(len(pred)):
+            # Pred
+            idx, cl = pred_tuple[i]
+            pred[int(idx)] = int(cl)
+            # Actual
+            idx, cl =true_tuple[i]
+            true[int(idx)] = int(cl)
+
+        confusion_matrix = get_confusion_matrix(pred, true)
+        return confusion_matrix
 
 if __name__ == '__main__':
     sc = SparkContext()

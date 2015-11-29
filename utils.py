@@ -65,7 +65,14 @@ def find_neighbours(dist_array, k=1):
     top_k_indices = sorted(ind_dist_dict, key=ind_dist_dict.get)[:k]
     
     # return near neighbours along with their labels
-    k_neighbors = [(idx, info_dict[idx][1], info_dict[idx][-1]) for idx in top_k_indices]
+
+    # distinguish train and test
+    if len(dist_array) < 4:
+        label_index = 0
+    else:
+        label_index = 1
+
+    k_neighbors = [(idx, info_dict[idx][label_index], info_dict[idx][-1]) for idx in top_k_indices]
 
     return k_neighbors
 
@@ -78,10 +85,18 @@ def eucdist(p):
     import numpy as np
     p1, p2 = p
     #Unpacks first point into index,class,features
-    i1,c1,f1=p1
+
+    # Distinguish test and train
+    if len(p1) < 3:
+        i1,f1 = p1
+    else:
+        i1,c1,f1=p1
     #Unpacks second point into index,class,features
     i2,c2,f2=p2
     #Initializes distance
     dist = np.linalg.norm(np.asarray(f1) - np.asarray(f2))
     #Returns index1,index2,class1,class2,euclidean distance
-    return (i1,i2,c1,c2,dist)
+    if len(p1) < 3:
+        return (i1,i2,c2,dist)
+    else:
+        return (i1,i2,c1,c2,dist)
