@@ -31,7 +31,8 @@ class KNN(object):
         # Creates key value pair where key is index1
         pairs = self.data.cartesian(self.data).filter(lambda (x1, x2): x1[0] != x2[0])
         #Applies euclidean distance function to all pairs
-        imgED = pairs.map(lambda x: get_distance(x,self.norm))
+        norm = self.norm
+        imgED = pairs.map(lambda x: get_distance(x, norm))
         # Creates key value pair where key is index1
         KVpair = imgED.map(lambda x: (x[0],x[1:]))
         # Group distances for each key
@@ -43,14 +44,16 @@ class KNN(object):
         # Find k nearest neighbor for each key
         # for each k, returns a list of tuples; each tuple (neighbour_index, neighbour_label)
         distRDD = self.get_pair_distance()
-        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, self.k)))
+        k = self.k
+        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
         return sortedDistRDD
 
     def train(self):
         '''return confusion matrix'''
         sortedDistRDD = self.get_k_nearest_neighbours()
         # Predict -- Majority Voting
-        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, self.weighted, self.smooth)))
+        weighted, smooth = self.weighted, self.smooth
+        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, weighted, smooth)))
         # Get actual labels
         actualClassRDD = self.data.map(lambda (index, cl, features) : (index, cl))
 
@@ -80,7 +83,8 @@ class KNN(object):
         # Create pair
         pairs = other_data.cartesian(self.data)
         # Applies euclidean distance function to all pairs
-        pointED = pairs.map(lambda x: get_distance(x, self.norm))
+        norm = self.norm
+        pointED = pairs.map(lambda x: get_distance(x, norm))
         # Creates key value pair where key is index1
         KVpair = pointED.map(lambda x: (x[0],x[1:]))
         # Group distances for each key
@@ -89,7 +93,8 @@ class KNN(object):
         # Find k Nearest Neighbours
         k = int(self.k)
         sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
-        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, self.weighted, self.smooth)))
+        weighted, smooth = self.weighted, self.smooth
+        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, weighted, smooth)))
         return predictionRDD
 
     def test(self, test_data, test_label):
@@ -134,6 +139,8 @@ if __name__ == '__main__':
     # Switches positions of index and data
     testDataRDD = t1.map(lambda (data,index):(index,data[:-1]))
     testLabelRDD = t1.map(lambda (data,index):(index,data[-1]))
+    print testDataRDD.collect()
+    print testLabelRDD.collect()
 
     knn.predict(testDataRDD)
     knn.test(testDataRDD, testLabelRDD)
