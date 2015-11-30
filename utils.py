@@ -26,7 +26,7 @@ def get_confusion_matrix(pred, true, see=True):
 
     return confusion_matrix
 
-def vote(knns, weighted=False, offset=1):
+def vote(knns, weighted=False, smooth=1):
     '''
         Return predictions by voting
         Default: Equal weights for all neighbours
@@ -41,8 +41,8 @@ def vote(knns, weighted=False, offset=1):
             # weight inversely proportional to distance
             distance = float(n_i[-1])
             # separate distance 0 due to ZeroDivisionError
-            # Use offset to avoid zero denominator
-            pred_dict[this_label] += 1./(distance+offset)
+            # Smooth denominator to avoid zero denominator
+            pred_dict[this_label] += 1./(distance+smooth)
 
         else:
             pred_dict[this_label] += 1
@@ -76,7 +76,7 @@ def find_neighbours(dist_array, k=1):
 
     return k_neighbors
 
-def eucdist(p):
+def get_distance(p, norm=2):
 
     '''
         Euclidean distance function, takes in a pair of points
@@ -94,7 +94,7 @@ def eucdist(p):
     #Unpacks second point into index,class,features
     i2,c2,f2=p2
     #Initializes distance
-    dist = np.linalg.norm(np.asarray(f1) - np.asarray(f2))
+    dist = np.linalg.norm(np.asarray(f1) - np.asarray(f2), norm)
     #Returns index1,index2,class1,class2,euclidean distance
     if len(p1) < 3:
         return (i1,i2,c2,dist)

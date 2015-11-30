@@ -9,23 +9,29 @@ class KNN(object):
         KNN for PySpark
     '''
 
-    def __init__(self, data, k=1):
+    def __init__(self, data, k=1, norm=2, smooth=1, weighted=False):
         '''
             Initialize a KNN object
             data: RDD Type
             data format: (index, class, features)
         '''
         self.k = int(k)
+        self.norm = norm
         self.data = data
+        self.smooth = smooth
+        self.weighted = weighted
 
-    def update_k(self, k):
+    def change_k(self, k):
         self.k = int(k)
+
+    def change_norm(self, norm):
+        self.norm = int(norm)
 
     def get_pair_distance(self):
         # Creates key value pair where key is index1
         pairs = self.data.cartesian(self.data).filter(lambda (x1, x2): x1[0] != x2[0])
         #Applies euclidean distance function to all pairs
-        imgED = pairs.map(eucdist)
+        imgED = pairs.map(lambda x: get_distance(x,self.norm))
         # Creates key value pair where key is index1
         KVpair = imgED.map(lambda x: (x[0],x[1:]))
         # Group distances for each key
@@ -36,16 +42,15 @@ class KNN(object):
     def get_k_nearest_neighbours(self):
         # Find k nearest neighbor for each key
         # for each k, returns a list of tuples; each tuple (neighbour_index, neighbour_label)
-        distRDD = self.get_pair_distance()
-        k = int(self.k)
-        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
+        distRDD = self.get_pair_distance(self.norm)
+        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, self.k)))
         return sortedDistRDD
 
-    def train(self, weighted=False, offset=1):
+    def train(self):
         '''return confusion matrix'''
         sortedDistRDD = self.get_k_nearest_neighbours()
         # Predict -- Majority Voting
-        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, weighted, offset)))
+        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, self.weighted, self.smooth)))
         # Get actual labels
         actualClassRDD = self.data.map(lambda (index, cl, features) : (index, cl))
 
@@ -64,7 +69,7 @@ class KNN(object):
         confusion_matrix = get_confusion_matrix(pred, true)
         return confusion_matrix
 
-    def predict(self, other_data, weighted=False, offset=1):
+    def predict(self, other_data):
         '''
             Returns a RDD object which stores index and predictions
             @param
@@ -75,7 +80,7 @@ class KNN(object):
         # Create pair
         pairs = other_data.cartesian(self.data)
         # Applies euclidean distance function to all pairs
-        pointED = pairs.map(eucdist)
+        pointED = pairs.map(lambda x: get_distance(x, self.norm))
         # Creates key value pair where key is index1
         KVpair = pointED.map(lambda x: (x[0],x[1:]))
         # Group distances for each key
@@ -84,7 +89,7 @@ class KNN(object):
         # Find k Nearest Neighbours
         k = int(self.k)
         sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
-        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, weighted, offset)))
+        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, self.weighted, self.smooth)))
         return predictionRDD
 
     def test(self, test_data, test_label):
@@ -129,8 +134,6 @@ if __name__ == '__main__':
     # Switches positions of index and data
     testDataRDD = t1.map(lambda (data,index):(index,data[:-1]))
     testLabelRDD = t1.map(lambda (data,index):(index,data[-1]))
-    print testDataRDD.collect()
-    print testLabelRDD.collect()
 
     knn.predict(testDataRDD)
     knn.test(testDataRDD, testLabelRDD)
