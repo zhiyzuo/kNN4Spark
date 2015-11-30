@@ -1,7 +1,7 @@
 
 import numpy as np
 from pyspark import SparkContext
-from utils import eucdist, vote, find_neighbours, get_confusion_matrix
+from utils import get_distance, vote, find_neighbours, get_confusion_matrix
 
 class KNN(object):
 
