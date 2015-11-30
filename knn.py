@@ -42,7 +42,7 @@ class KNN(object):
     def get_k_nearest_neighbours(self):
         # Find k nearest neighbor for each key
         # for each k, returns a list of tuples; each tuple (neighbour_index, neighbour_label)
-        distRDD = self.get_pair_distance(self.norm)
+        distRDD = self.get_pair_distance()
         sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, self.k)))
         return sortedDistRDD
 
