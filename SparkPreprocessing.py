@@ -25,12 +25,12 @@ def processImage(imageName):
     numOfSamples=(imSizeX-fringePixels*2)*(columnSampleSize) #eg. if x side of image(and y is 7) is 10 then only have 4 samples 
 
     numOfColsPerPartialSample =  blockSideSize*blockSideSize*3
-    partialSample = np.zeros((1,numOfColsPerPartialSample),'uint8')
-    partialSamples = np.zeros((numOfSamples,numOfColsPerPartialSample),'uint8')
+    partialSample = np.zeros((1,numOfColsPerPartialSample))
+    partialSamples = np.zeros((numOfSamples,numOfColsPerPartialSample))
 
     numOfColumnsPerSample = numOfColsPerPartialSample+1 # the cube made by the block and rbg + 1 for class label of skin
-    sample = np.zeros((1,numOfColumnsPerSample),'uint8')
-    samples = np.zeros((numOfSamples,numOfColumnsPerSample),'uint8')
+    sample = np.zeros((1,numOfColumnsPerSample))
+    samples = np.zeros((numOfSamples,numOfColumnsPerSample))
 
     isSkin = 1
     currentSample=0
