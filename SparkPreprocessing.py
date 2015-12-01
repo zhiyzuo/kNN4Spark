@@ -65,8 +65,8 @@ def processImage(imageName):
             currentSample=currentSample+1;
             isSkin=1;
     
-    outputSamples = np.array(samples)
-    return (outputSamples)
+    #outputSamples = np.array(samples)
+    return (samples)
     #np.savetxt("/scratch/tosadojimenez/images/bdagroup5/Preprocessed/samples_"+imageName[0:-4]+"_bs"+str(blockSideSize)+".txt",samples,fmt='%d')
 
 #if __name__ == '__main__':
