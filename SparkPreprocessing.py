@@ -9,8 +9,8 @@ def processImage(imageName):
     import math
     import PIL.Image
 
-    imagePath  = "/scratch/tosadojimenez/images/bdagroup5/Original/trainAndVal/"+imageName
-    skinPath = "/scratch/tosadojimenez/images/bdagroup5/Skin/trainAndVal/"+imageName[0:-4]+"_s.bmp"
+    imagePath  = "/home/mvijayen/original/train/"+imageName
+    skinPath = "/home/mvijayen/skin/"+imageName[0:-4]+"_s.bmp"
     skin = PIL.Image.open(skinPath)
     image = PIL.Image.open(imagePath)
     pixels = image.load()
