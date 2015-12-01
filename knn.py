@@ -126,19 +126,21 @@ if __name__ == '__main__':
     sc = SparkContext()
     toParallel = os.listdir("/home/mvijayen/original/train/")
     parallelFiles = sc.parallelize(toParallel[0:1])
-    imgRDD = parallelFiles.map(processImage)
+    imgRDDs = parallelFiles.map(processImage)
+    for eachRDD in imgRDDs.collect():
     # Read file
     #img = sc.textFile('./test.txt')
     #imgRDD = img.map(lambda s: [int(t) for t in s.split()])
     # Adds the index
-    RDDind = imgRDD.zipWithIndex()
+        imgRDD = sc.parallelize(eachRDD)
+        RDDind = imgRDD.zipWithIndex()
     # Switches positions of index and data
-    indRDD = RDDind.map(lambda (data,index):(index,data))
+        indRDD = RDDind.map(lambda (data,index):(index,data))
     # Organizes into index,class,features
-    indClassFeat = indRDD.map(lambda (index,data): (index,data[-1],data[:-1]))
+        indClassFeat = indRDD.map(lambda (index,data): (index,data[-1],data[:-1]))
 
-    knn = KNN(indClassFeat)
-    knn.train()
+        knn = KNN(indClassFeat)
+        knn.train()
 
     #test_set = sc.parallelize([[74, 85, 123, 0], [75, 90, 130, 1]])
     #t1 = test_set.zipWithIndex()
