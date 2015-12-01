@@ -64,12 +64,14 @@ def processImage(imageName):
             samples[currentSample,:]= sample
             currentSample=currentSample+1;
             isSkin=1;
+    
+    outputSamples = np.array(samples)
+    return (outputSamples)
+    #np.savetxt("/scratch/tosadojimenez/images/bdagroup5/Preprocessed/samples_"+imageName[0:-4]+"_bs"+str(blockSideSize)+".txt",samples,fmt='%d')
 
-    np.savetxt("/scratch/tosadojimenez/images/bdagroup5/Preprocessed/samples_"+imageName[0:-4]+"_bs"+str(blockSideSize)+".txt",samples,fmt='%d')
-
-if __name__ == '__main__':
+#if __name__ == '__main__':
         
-    toParallel = os.listdir("/scratch/tosadojimenez/images/bdagroup5/Original/trainAndVal/")
-    parallelFiles = sc.parallelize(toParallel[0:2])
-    parallelFiles.map(processImage)
+    #toParallel = os.listdir("/scratch/tosadojimenez/images/bdagroup5/Original/trainAndVal/")
+    #parallelFiles = sc.parallelize(toParallel[0:2])
+    #parallelFiles.map(processImage)
 
