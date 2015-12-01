@@ -1,6 +1,9 @@
 
 import numpy as np
-from pyspark import SparkContext
+import sys
+import os
+from pyspark import SparkConf, SparkContext
+from SparkPreprocessing import processImage
 from utils import get_distance, vote, find_neighbours, get_confusion_matrix
 
 class KNN(object):
@@ -121,9 +124,12 @@ class KNN(object):
 
 if __name__ == '__main__':
     sc = SparkContext()
+    toParallel = os.listdir("/home/mvijayen/original/train/")
+    parallelFiles = sc.parallelize(toParallel[0:1])
+    imgRDD = parallelFiles.map(processImage)
     # Read file
-    img = sc.textFile('./test.txt')
-    imgRDD = img.map(lambda s: [int(t) for t in s.split()])
+    #img = sc.textFile('./test.txt')
+    #imgRDD = img.map(lambda s: [int(t) for t in s.split()])
     # Adds the index
     RDDind = imgRDD.zipWithIndex()
     # Switches positions of index and data
@@ -134,14 +140,14 @@ if __name__ == '__main__':
     knn = KNN(indClassFeat)
     knn.train()
 
-    test_set = sc.parallelize([[74, 85, 123, 0], [75, 90, 130, 1]])
-    t1 = test_set.zipWithIndex()
+    #test_set = sc.parallelize([[74, 85, 123, 0], [75, 90, 130, 1]])
+    #t1 = test_set.zipWithIndex()
     # Switches positions of index and data
-    testDataRDD = t1.map(lambda (data,index):(index,data[:-1]))
-    testLabelRDD = t1.map(lambda (data,index):(index,data[-1]))
-    print testDataRDD.collect()
-    print testLabelRDD.collect()
+    #testDataRDD = t1.map(lambda (data,index):(index,data[:-1]))
+    #testLabelRDD = t1.map(lambda (data,index):(index,data[-1]))
+    #print testDataRDD.collect()
+    #print testLabelRDD.collect()
 
-    knn.predict(testDataRDD)
-    knn.test(testDataRDD, testLabelRDD)
+    #knn.predict(testDataRDD)
+    #knn.test(testDataRDD, testLabelRDD)
 
