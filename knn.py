@@ -1,11 +1,3 @@
-
-import numpy as np
-import sys
-import os
-from pyspark import SparkConf, SparkContext
-from SparkPreprocessing import processImage
-from utils import get_distance, vote, find_neighbours, get_confusion_matrix
-
 class KNN(object):
 
     '''
@@ -123,8 +115,16 @@ class KNN(object):
         return confusion_matrix
 
 if __name__ == '__main__':
+
+    import os
+    import sys
+    import numpy as np
+    from processImage import processImage
+    from pyspark import SparkConf, SparkContext
+    from utils import get_distance, vote, find_neighbours, get_confusion_matrix
+
     sc = SparkContext()
-    toParallel = os.listdir("/home/mvijayen/original/train/")
+    toParallel = os.listdir("../Original/train/")
     parallelFiles = sc.parallelize(toParallel[0:1])
     imgRDDs = parallelFiles.map(processImage)
     for eachRDD in imgRDDs.collect():
