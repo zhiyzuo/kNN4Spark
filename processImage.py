@@ -60,12 +60,11 @@ def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
                 partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])
                 partialSampleIndex = partialSampleIndex+imSizeRGB
             #for the middle point (same as when block side size is 1)
-            partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[x,y]) 
-            sample[0,0:numOfColsPerPartialSample]=partialSample
-            sample[0,numOfColumnsPerSample-1] = isSkin
-            samples[currentSample,:]= sample
-            currentSample=currentSample+1;
-            isSkin=1;
+        partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[x,y]) 
+        sample[0,0:numOfColsPerPartialSample]=partialSample
+        sample[0,numOfColumnsPerSample-1] = isSkin
+        samples[currentSample,:]= sample
+        currentSample=currentSample+1;
+        isSkin=1;
     
     return (samples)
-
