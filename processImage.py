@@ -44,27 +44,27 @@ def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
             partialSampleIndex = 0
             for blockFringe in range(fringePixels, 0,-1): #use fringes in order have the spiral order, skip if fringe is 0                      
                 xBlock = x-blockFringe   # top section of outer block
-            for yBlock in range(y-blockFringe,y+blockFringe+1):#+1 because it excludes last index
-                partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])                        
-                partialSampleIndex =partialSampleIndex+imSizeRGB #next 3 RGB values
-            yBlock = y+blockFringe #middle section right 
-            for xBlock in range(x-(blockFringe-1),x+blockFringe):
-                partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])
-                partialSampleIndex = partialSampleIndex+imSizeRGB
-            yBlock = y-blockFringe  #middle section left
-            for xBlock in range(x-(blockFringe-1),x+blockFringe):
-                partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])
-                partialSampleIndex = partialSampleIndex+imSizeRGB
-            xBlock = x+blockFringe #bottom section
-            for yBlock in range(y-blockFringe,y+blockFringe+1):
-                partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])
-                partialSampleIndex = partialSampleIndex+imSizeRGB
-            #for the middle point (same as when block side size is 1)
-        partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[x,y]) 
-        sample[0,0:numOfColsPerPartialSample]=partialSample
-        sample[0,numOfColumnsPerSample-1] = isSkin
-        samples[currentSample,:]= sample
-        currentSample=currentSample+1;
-        isSkin=1;
+                for yBlock in range(y-blockFringe,y+blockFringe+1):#+1 because it excludes last index
+                    partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])                        
+                    partialSampleIndex =partialSampleIndex+imSizeRGB #next 3 RGB values
+                yBlock = y+blockFringe #middle section right 
+                for xBlock in range(x-(blockFringe-1),x+blockFringe):
+                    partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])
+                    partialSampleIndex = partialSampleIndex+imSizeRGB
+                yBlock = y-blockFringe  #middle section left
+                for xBlock in range(x-(blockFringe-1),x+blockFringe):
+                    partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])
+                    partialSampleIndex = partialSampleIndex+imSizeRGB
+                xBlock = x+blockFringe #bottom section
+                for yBlock in range(y-blockFringe,y+blockFringe+1):
+                    partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[xBlock,yBlock])
+                    partialSampleIndex = partialSampleIndex+imSizeRGB
+                #for the middle point (same as when block side size is 1)
+            partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[x,y]) 
+            sample[0,0:numOfColsPerPartialSample]=partialSample
+            sample[0,numOfColumnsPerSample-1] = isSkin
+            samples[currentSample,:]= sample
+            currentSample=currentSample+1;
+            isSkin=1;
     
     return (samples)
