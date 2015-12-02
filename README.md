@@ -3,7 +3,7 @@
 
 Test the code: `spark-submit knn.py`
 
-##### To do List:
+##### To do List (12/02/15):
 
 * Testing training code -- More than 5,300 samples will give me outofmemory errors.
 
