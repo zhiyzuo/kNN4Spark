@@ -9,14 +9,24 @@ def processImage(imageName):
     import math
     import PIL.Image
 
+    blockSideSize = 7 #variables
+    resizeTo = 0.75
+
     imagePath  = "/home/mvijayen/original/train/"+imageName
     skinPath = "/home/mvijayen/skin/"+imageName[0:-4]+"_s.bmp"
     skin = PIL.Image.open(skinPath)
     image = PIL.Image.open(imagePath)
+    imSizeX,imSizeY = image.size
+    if resizeTo != 1 :
+        imSizeX = int(resizeTo*imSizeX)
+        imSizeY = int(resizeTo*imSizeY)
+        resizedSize= imSizeX, imSizeY
+        image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
+        skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
+
+    
     pixels = image.load()
     skinPixels = skin.load()                          
-    blockSideSize = 7
-    imSizeX,imSizeY = image.size
     imSizeRGB = 3
 
     fringePixels = np.int(math.floor(blockSideSize/2)) # to be ignored, use sizeOfBlock x sizeOfBlock blocks
