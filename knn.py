@@ -126,7 +126,7 @@ if __name__ == '__main__':
     sc = SparkContext()
     toParallel = os.listdir("../Original/train/")
     parallelFiles = sc.parallelize(toParallel[0:1])
-    imgRDDs = parallelFiles.map(processImage)
+    imgRDDs = parallelFiles.map(lambda x : processImage(x, resizeTo=0.6))
     for eachRDD in imgRDDs.collect():
     # Read file
     #img = sc.textFile('./test.txt')
