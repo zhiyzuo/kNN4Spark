@@ -1,19 +1,11 @@
-import sys
-import os
-
-from pyspark import SparkConf, SparkContext
-
-def processImage(imageName):
+def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
 
     import numpy as np
     import math
-    import PIL.Image
+    import PIL.Image 
 
-    blockSideSize = 7 #variables
-    resizeTo = 0.75
-
-    imagePath  = "/home/mvijayen/original/train/"+imageName
-    skinPath = "/home/mvijayen/skin/"+imageName[0:-4]+"_s.bmp"
+    imagePath  = "../Original/train/"+imageName
+    skinPath = "../Skin/train/"+imageName[0:-4]+"_s.bmp"
     skin = PIL.Image.open(skinPath)
     image = PIL.Image.open(imagePath)
     imSizeX,imSizeY = image.size
@@ -75,13 +67,5 @@ def processImage(imageName):
             currentSample=currentSample+1;
             isSkin=1;
     
-    #outputSamples = np.array(samples)
     return (samples)
-    #np.savetxt("/scratch/tosadojimenez/images/bdagroup5/Preprocessed/samples_"+imageName[0:-4]+"_bs"+str(blockSideSize)+".txt",samples,fmt='%d')
-
-#if __name__ == '__main__':
-        
-    #toParallel = os.listdir("/scratch/tosadojimenez/images/bdagroup5/Original/trainAndVal/")
-    #parallelFiles = sc.parallelize(toParallel[0:2])
-    #parallelFiles.map(processImage)
 
