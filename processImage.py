@@ -12,8 +12,8 @@ def processImage(imageName, blockSideSize=7, size=100):
     imSizeX,imSizeY = image.size
     
     # fix the width
-    imSizeY = (float(imSizeY)/imSizeX) * size
-    imSizeX = size
+    imSizeY = int((float(imSizeY)/imSizeX) * size)
+    imSizeX = int(size)
     resizedSize= imSizeX, imSizeY
     image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
     skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
