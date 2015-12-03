@@ -4,6 +4,10 @@ def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
     import math
     import PIL.Image 
 
+    #variables
+    blockSideSize = 7
+    resizeTo = 0.75
+    
     imagePath  = "../Original/train/"+imageName
     skinPath = "../Skin/train/"+imageName[0:-4]+"_s.bmp"
     skin = PIL.Image.open(skinPath)
@@ -15,6 +19,7 @@ def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
         resizedSize= imSizeX, imSizeY
         image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
         skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
+        imSizeX,imSizeY = image.size
 
     
     pixels = image.load()
