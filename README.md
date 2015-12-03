@@ -13,9 +13,13 @@ Test the code: `spark-submit knn.py`
 
 #### Strategies employed so far:
 
-* Changing d -- pixel block size.
-* Parallelization -- HDFS/Spark/HPC
+* Changing d -- pixel block size
+* Changing N -- resizing
+* Parallelization -- Spark/HPC
 * Algebra -- weighting option (I think this would count) -- thoughts?? -> I think this is reasonable (Zhiya Zuo).
 * What about changing distance metric? Do you think changing this will be considered as a strategy?
+ 
+Largest image - img01114
+Smallest image - img00985
 
 
