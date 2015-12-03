@@ -71,4 +71,4 @@ def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
             currentSample=currentSample+1;
             isSkin=1;
     
-    return (samples)
+    return (np.asarray(samples, dtype=np.uint8))
