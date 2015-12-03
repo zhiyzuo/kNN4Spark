@@ -1,4 +1,5 @@
-def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
+def processImage(imageName, blockSideSize=7, size=100):
+#def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
 
     import numpy as np
     import math
@@ -9,6 +10,17 @@ def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
     skin = PIL.Image.open(skinPath)
     image = PIL.Image.open(imagePath)
     imSizeX,imSizeY = image.size
+    
+    # fix the width
+    imSizeY = (float(imSizeY)/imSizeX) * size
+    imSizeX = size
+    resizedSize= imSizeX, imSizeY
+    image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
+    skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
+    imSizeX,imSizeY = image.size
+
+
+    '''
     if resizeTo != 1 :
         imSizeX = int(resizeTo*imSizeX)
         imSizeY = int(resizeTo*imSizeY)
@@ -16,6 +28,7 @@ def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
         image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
         skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
         imSizeX,imSizeY = image.size
+    '''
 
     
     pixels = image.load()
