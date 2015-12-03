@@ -3,10 +3,6 @@ def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
     import numpy as np
     import math
     import PIL.Image 
-
-    #variables
-    blockSideSize = 7
-    resizeTo = 0.75
     
     imagePath  = "../Original/train/"+imageName
     skinPath = "../Skin/train/"+imageName[0:-4]+"_s.bmp"
