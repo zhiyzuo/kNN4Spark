@@ -57,6 +57,5 @@ docs/_build/
 target/
 
 # Self-Defined Items
-run
 *.swp
 *.pyc
