@@ -20,7 +20,7 @@ Test the code: `spark-submit knn.py`
 * What about changing distance metric? Do you think changing this will be considered as a strategy?
  
 In training folder:
-Largest image - img01114 (dim: 1280 by 960)
-Smallest image - img00985 (dim: 99 by 117)
+*Largest image - img01114 (dim: 1280 by 960)
+*Smallest image - img00985 (dim: 99 by 117)
 
 
