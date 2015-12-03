@@ -10,15 +10,20 @@ def processImage(imageName, blockSideSize=7, size=100):
     skin = PIL.Image.open(skinPath)
     image = PIL.Image.open(imagePath)
     imSizeX,imSizeY = image.size
+
+    if imSizeX > imSizeY:
+        imSizeY = int((float(imSizeY)/imSizeX) * size)
+        imSizeX = int(size)
+    else:
+        imSizeX = int((float(imSizeX)/imSizeY) * size)
+        imSizeY = int(size)
+
+    resizedSize= imSizeX, imSizeY
     
     # fix the width
-    imSizeY = int((float(imSizeY)/imSizeX) * size)
-    imSizeX = int(size)
-    resizedSize= imSizeX, imSizeY
     image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
     skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
     imSizeX,imSizeY = image.size
-
 
     '''
     if resizeTo != 1 :
@@ -29,7 +34,6 @@ def processImage(imageName, blockSideSize=7, size=100):
         skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
         imSizeX,imSizeY = image.size
     '''
-
     
     pixels = image.load()
     skinPixels = skin.load()                          
