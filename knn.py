@@ -124,15 +124,14 @@ if __name__ == '__main__':
     from utils import get_distance, vote, find_neighbours, get_confusion_matrix
 
     sc = SparkContext()
-    toParallel = os.listdir("../Original/train/")
-    parallelFiles = sc.parallelize(toParallel[0:1])
-    imgRDDs = parallelFiles.map(lambda x : processImage(x, resizeTo=0.6))
-    for eachRDD in imgRDDs.collect():
+    images = os.listdir("../Original/train/")
+    for img in images:
+        processedImg = processImage(img, resizeTo=0.6)
     # Read file
     #img = sc.textFile('./test.txt')
     #imgRDD = img.map(lambda s: [int(t) for t in s.split()])
     # Adds the index
-        imgRDD = sc.parallelize(eachRDD)
+        imgRDD = sc.parallelize(processedImg)
         RDDind = imgRDD.zipWithIndex()
     # Switches positions of index and data
         indRDD = RDDind.map(lambda (data,index):(index,data))
