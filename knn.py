@@ -126,7 +126,7 @@ if __name__ == '__main__':
     sc = SparkContext()
     images = os.listdir("../Original/train/")
     for img in images:
-        processedImg = processImage(img, resizeTo=0.6)
+        processedImg = processImage(img, size=100)
     # Read file
     #img = sc.textFile('./test.txt')
     #imgRDD = img.map(lambda s: [int(t) for t in s.split()])
