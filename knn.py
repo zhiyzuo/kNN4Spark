@@ -131,5 +131,5 @@ if __name__ == '__main__':
     indClassFeat = get_image_rdd()
 
     knn = KNN(indClassFeat)
-    knn.train()
+    knn.loo()
 
