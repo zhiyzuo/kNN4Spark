@@ -4,6 +4,7 @@ def get_image_rdd(sc, n_=100, resize=99):
     '''
 
     import os
+    from processImage import processImage
 
 
     images = os.listdir("../Original/train/")

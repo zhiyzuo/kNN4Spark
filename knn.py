@@ -119,9 +119,7 @@ class KNN(object):
 
 if __name__ == '__main__':
 
-    import os
     import numpy as np
-    from processImage import processImage
     from pyspark import SparkConf, SparkContext
     from utils import get_distance, vote, find_neighbours, get_confusion_matrix, get_image_rdd
 
