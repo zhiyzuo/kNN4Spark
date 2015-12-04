@@ -120,7 +120,6 @@ class KNN(object):
 if __name__ == '__main__':
 
     import os
-    import sys
     import numpy as np
     from processImage import processImage
     from pyspark import SparkConf, SparkContext
@@ -128,7 +127,7 @@ if __name__ == '__main__':
 
     sc = SparkContext()
 
-    indClassFeat = get_image_rdd()
+    indClassFeat = get_image_rdd(sc)
 
     knn = KNN(indClassFeat)
     knn.loo()

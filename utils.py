@@ -1,4 +1,4 @@
-def get_image_rdd(n_=100, resize=99):
+def get_image_rdd(sc, n_=100, resize=99):
     '''
         Retrieve pixels as RDDs from images
     '''
