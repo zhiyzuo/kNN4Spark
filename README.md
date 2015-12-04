@@ -8,6 +8,12 @@ Test the code: `spark-submit knn.py`
 I tried to use flatMap to directly input images and output pixels. It takes 40s to index and 40s to count for 100 images.
 The relationship seems linear: 500 images cost 200s to index and 200s to count.
 
+From Joel: Dataset Description (Without resizing)
+- 5x5 block samples: 529,306,855
+- 7x7 block samples: 525,249,341
+- 9x9 block samples: 521,207,827
+- Total number of skin pixels: 16.77%
+
 ##### To do List (12/03/15):
 
 * Sampling?
