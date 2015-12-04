@@ -3,11 +3,11 @@
 
 Test the code: `spark-submit knn.py`
 
-##### To do List (12/02/15):
+##### To do List (12/03/15):
 
-* Testing training code -- More than 5,300 samples will give me outofmemory errors.
+* Sampling?
 
-* Do you think we should also store the wrong pixels so that we can go back to see the "hard samples"? -- this will be helpful when writing the report. Will add more substance to the report.
+* Is it appropriate to do resize?
 
 * Output confusion matrix in text format onto disk.
 
@@ -19,8 +19,8 @@ Test the code: `spark-submit knn.py`
 * Algebra -- weighting option (I think this would count) -- thoughts?? -> I think this is reasonable (Zhiya Zuo).
 * What about changing distance metric? Do you think changing this will be considered as a strategy?
  
-######In training folder:
-*Largest image - img01114 (dim: 1280 by 960)
-*Smallest image - img00985 (dim: 99 by 117)
+###### In training folder:
+* Largest - img01114 (1280 x 960)
+* Smallest - img00985 (99 x 117)
 
 
