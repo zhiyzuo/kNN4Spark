@@ -130,3 +130,5 @@ if __name__ == '__main__':
     knn = KNN(indClassFeat)
     knn.loo()
 
+    sc.stop()
+
