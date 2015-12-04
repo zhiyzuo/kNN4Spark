@@ -125,10 +125,10 @@ if __name__ == '__main__':
 
     sc = SparkContext()
 
-    indClassFeat = get_image_rdd(sc)
+    indClassFeat = get_image_rdd(sc, n_=1000)
 
     knn = KNN(indClassFeat)
-    knn.loo()
+    #knn.loo()
 
     sc.stop()
 

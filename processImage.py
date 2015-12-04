@@ -11,19 +11,20 @@ def processImage(imageName, blockSideSize=7, size=100):
     image = PIL.Image.open(imagePath)
     imSizeX,imSizeY = image.size
 
-    if imSizeX > imSizeY:
-        imSizeY = int((float(imSizeY)/imSizeX) * size)
-        imSizeX = int(size)
-    else:
-        imSizeX = int((float(imSizeX)/imSizeY) * size)
-        imSizeY = int(size)
+    if size != None:
+        if imSizeX > imSizeY:
+            imSizeY = int((float(imSizeY)/imSizeX) * size)
+            imSizeX = int(size)
+        else:
+            imSizeX = int((float(imSizeX)/imSizeY) * size)
+            imSizeY = int(size)
 
-    resizedSize= imSizeX, imSizeY
+        resizedSize= imSizeX, imSizeY
     
-    # fix the width
-    image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
-    skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
-    imSizeX,imSizeY = image.size
+        # fix the width
+        image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
+        skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
+        imSizeX,imSizeY = image.size
 
     '''
     if resizeTo != 1 :
