@@ -43,8 +43,11 @@ class KNN(object):
         sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
         return sortedDistRDD
 
-    def train(self):
-        '''return confusion matrix'''
+    def loo(self):
+        '''
+            Leave one out for the training
+            return confusion matrix
+        '''
         sortedDistRDD = self.get_k_nearest_neighbours()
         # Predict -- Majority Voting
         weighted, smooth = self.weighted, self.smooth
@@ -121,34 +124,12 @@ if __name__ == '__main__':
     import numpy as np
     from processImage import processImage
     from pyspark import SparkConf, SparkContext
-    from utils import get_distance, vote, find_neighbours, get_confusion_matrix
+    from utils import get_distance, vote, find_neighbours, get_confusion_matrix, get_image_rdd
 
     sc = SparkContext()
-    images = os.listdir("../Original/train/")
-    for img in images:
-        processedImg = processImage(img, size=100)
-    # Read file
-    #img = sc.textFile('./test.txt')
-    #imgRDD = img.map(lambda s: [int(t) for t in s.split()])
-    # Adds the index
-        imgRDD = sc.parallelize(processedImg)
-        RDDind = imgRDD.zipWithIndex()
-    # Switches positions of index and data
-        indRDD = RDDind.map(lambda (data,index):(index,data))
-    # Organizes into index,class,features
-        indClassFeat = indRDD.map(lambda (index,data): (index,data[-1],data[:-1]))
 
-        knn = KNN(indClassFeat)
-        knn.train()
+    indClassFeat = get_image_rdd()
 
-    #test_set = sc.parallelize([[74, 85, 123, 0], [75, 90, 130, 1]])
-    #t1 = test_set.zipWithIndex()
-    # Switches positions of index and data
-    #testDataRDD = t1.map(lambda (data,index):(index,data[:-1]))
-    #testLabelRDD = t1.map(lambda (data,index):(index,data[-1]))
-    #print testDataRDD.collect()
-    #print testLabelRDD.collect()
-
-    #knn.predict(testDataRDD)
-    #knn.test(testDataRDD, testLabelRDD)
+    knn = KNN(indClassFeat)
+    knn.train()
 

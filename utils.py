@@ -1,3 +1,19 @@
+def get_image_rdd(n_=100, resize=99):
+    '''
+        Retrieve pixels as RDDs from images
+    '''
+
+    images = os.listdir("../Original/train/")
+    imgsRDD = sc.parallelize(images[:n_])
+    pixelsRDD = imgsRDD.flatMap(lambda x : processImage(x, size=resize))
+
+    RDDind = pixelsRDD.zipWithIndex()
+    indRDD = RDDind.map(lambda (data,index):(index,data))
+    indClassFeat = indRDD.map(lambda (index,data): (index,data[-1],data[:-1]))
+
+    return indClassFeat
+
+
 def get_confusion_matrix(pred, true, see=True):
     import numpy as np
     import numpy.matlib
