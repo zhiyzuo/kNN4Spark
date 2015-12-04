@@ -3,6 +3,9 @@ def get_image_rdd(n_=100, resize=99):
         Retrieve pixels as RDDs from images
     '''
 
+    import os
+
+
     images = os.listdir("../Original/train/")
     imgsRDD = sc.parallelize(images[:n_])
     pixelsRDD = imgsRDD.flatMap(lambda x : processImage(x, size=resize))
