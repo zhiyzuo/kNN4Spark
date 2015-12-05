@@ -27,8 +27,9 @@ def get_image_rdd(sc, n_groups=None, start=0, end=10, resize=0.1):
         return index_feature, index_label
     
     # Do reshape
-    regroup_feature = index_feature.groupBy(lambda x: x[0] % n_groups)
-    regroup_label = index_label.groupBy(lambda x: x[0] % n_groups)
+    # Do a following map to convert from resultiterable to list
+    regroup_feature = index_feature.groupBy(lambda x: x[0] % n_groups).map(lambda (idx, x): (idx, sorted(x)))
+    regroup_label = index_label.groupBy(lambda x: x[0] % n_groups).map(lambda (idx, x): (idx, sorted(x)))
     return regroup_feature, regroup_label
 
 def get_confusion_matrix(pred, true, see=True):
@@ -109,12 +110,32 @@ def find_neighbours(dist_array, k=1):
 
     return k_neighbors
 
+def cdist(u, A, norm=2):
+    '''
+        Calcualte the distance between
+        vector u and matrix A with norm = 2
+    '''
+
+    import numpy as np
+    u = np.asarray(u)
+    A = np.asarray(A)
+    distance_vector = np.zeros(A.shape[0])
+    for idx in A.shape[0]:
+        v = A[idx]
+        distance_vector[idx] = dist(u,v)
+       
+    return distance_vector
+        
+
+def dist(u, v, norm=2):
+    '''
+        Calculate distance between u and v
+    '''
+
+    return np.linalg.norm(np.asarray(u) - np.asarray(v), norm)
+
+'''
 def get_distance(p, norm=2):
-
-    '''
-        Euclidean distance function, takes in a pair of points
-    '''
-
     import numpy as np
     p1, p2 = p
     #Unpacks first point into index,class,features
@@ -133,3 +154,4 @@ def get_distance(p, norm=2):
         return (i1,i2,c2,dist)
     else:
         return (i1,i2,c1,c2,dist)
+'''
