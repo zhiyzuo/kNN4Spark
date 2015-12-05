@@ -84,47 +84,45 @@ def vote(knns, weighted=False, smooth=1):
     # return the majority class label
     return sorted(pred_dict, key=pred_dict.get)[-1]
 
-def cdist(u, F, C, k, norm=2):
+def cdist(u, A, C, k, norm=2):
     '''
         Calcualte the distance between
-        vector u and matrix F with norm = 2
+        vector u and matrix A with norm = 2
         
         @param
-        u: test point feature (index, feature);
-        F: training features array of (index, feature);
-        C: training labels array of (index, label);
+        u: (index, feature);
+        A: (index, [(index, feature)])
+        C: (index, [(index, class)])
         k: # of nearest neighoubour
     '''
 
-    import numpy as np
-    u = np.asarray(u)
-    F = np.asarray(F)
-    C = np.asarray(C)
+    # [(index, distance)]
+    distance_vector = dist(u, A)
+    smallest_k = sorted(distance_vector, key=lambda x: x[1])[:k]
 
-    # return result, which is an array of tuples (dist, label)
-    result = []
-    for idx in F.shape[0]:
-        # for each subgroup of trainings
-        F_ = F[idx]
-        # vector of ditances: (index, distance)
-        d_ = dist(u, F_, norm)
-        # get the smallest k for each subgroup; sorted by distance (2nd element)
-        smallest_k = sorted(d_, key=lambda x:x[1])[:k]
-
-        for item in smallest_k:
-            # find its class by index (1st element)
-            cls = C[idx][item[0]]
-            result.append((item[1], cls))
+    for item in smallest_k:
+        # find its class by index (1st element)
+        cls = C[idx][item[0]]
+        result.append((item[1], cls))
 
     return result
 
 def dist(u, A, norm=2):
+    '''
+        Distance between u and A
+
+        @param
+        u: (index, feature)
+        A: (index, [(index, feature)])
+    '''
+
     import numpy as np
-    u = np.asarray(u)
-    A = np.asarray(A)
     distance_vector = []
-    for idx in range(A.shape[0]):
-        v = A[idx]
+
+    # 2nd element of A is a list of training samples
+    for idx in range(len(A[1])):
+        v = A[1][idx]
+        # append (vi, distance)
         distance_vector.append(dist_(u, v, norm))
     return distance_vector
 
