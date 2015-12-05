@@ -1,5 +1,7 @@
-def processImage(imageName, blockSideSize=7, size=100):
-#def processImage(imageName, blockSideSize=7, resizeTo = 0.75):
+def processImage(imageName, blockSideSize=7, resizeTo = None):
+    '''
+        Update on 12/05/15: Change the resize feature to be a ratio
+    '''
 
     import numpy as np
     import math
@@ -11,30 +13,13 @@ def processImage(imageName, blockSideSize=7, size=100):
     image = PIL.Image.open(imagePath)
     imSizeX,imSizeY = image.size
 
-    if size != None:
-        if imSizeX > imSizeY:
-            imSizeY = int((float(imSizeY)/imSizeX) * size)
-            imSizeX = int(size)
-        else:
-            imSizeX = int((float(imSizeX)/imSizeY) * size)
-            imSizeY = int(size)
-
-        resizedSize= imSizeX, imSizeY
-    
-        # fix the width
-        image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
-        skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
-        imSizeX,imSizeY = image.size
-
-    '''
-    if resizeTo != 1 :
+    if resizeTo !=  None:
         imSizeX = int(resizeTo*imSizeX)
         imSizeY = int(resizeTo*imSizeY)
         resizedSize= imSizeX, imSizeY
         image.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
         skin.thumbnail(resizedSize, PIL.Image.ANTIALIAS)
         imSizeX,imSizeY = image.size
-    '''
     
     pixels = image.load()
     skinPixels = skin.load()                          

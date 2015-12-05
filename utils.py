@@ -11,7 +11,7 @@ def slice_list(data_list, num):
     return slices
 
 
-def get_image_rdd(sc, n_=100, resize=99):
+def get_image_rdd(sc, n_=100, resize=0.1):
     '''
         Retrieve pixels as RDDs from images
 
@@ -24,7 +24,7 @@ def get_image_rdd(sc, n_=100, resize=99):
 
     images = os.listdir("../Original/train/")
     imgsRDD = sc.parallelize(images[:n_])
-    pixelsRDD = imgsRDD.flatMap(lambda x : processImage(x, size=resize))
+    pixelsRDD = imgsRDD.flatMap(lambda x : processImage(x, resizeTo=resize))
 
     RDDind = pixelsRDD.zipWithIndex()
     indRDD = RDDind.map(lambda (data,index):(index,data))
