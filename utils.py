@@ -1,14 +1,17 @@
-def slice_list(data_list, num):
+def slice(data_list, new_shape):
     '''
         Collects the output of processImage and splits
+        Update on 12/05/12:
+        @param
+        data_list: a vector/matrix of data
+        reshape: the desired shape (a tuple)
     '''
-    avg = len(data_list) / float(num)
-    slices = []
-    position = 0.0
-    while position < len(data_list):
-        slices.append(data_list[int(position):int(position + avg)])
-        position += avg
-    return slices
+
+    import numpy as np
+    data = np.asarray(data_list)
+    reshaped_data = data.reshape(new_shape)
+
+    return reshaped_data
 
 
 def get_image_rdd(sc, n_=100, resize=0.1):
