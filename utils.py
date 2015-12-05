@@ -60,29 +60,41 @@ def get_confusion_matrix(pred, true, see=True):
 
     return confusion_matrix
 
-def vote(knns, weighted=False, smooth=1):
+def vote (DCpairs, k):
     '''
-        Return predictions by voting
-        Default: Equal weights for all neighbours
+        Sorts distance, class pairs
+        Returns majority class given k
     '''
-
-    # binary class
-    pred_dict = {0: 0., 1:0.}
-    for n_i in knns:
-        this_label = int(n_i[1])
-
-        if weighted:
-            # weight inversely proportional to distance
-            distance = float(n_i[-1])
-            # separate distance 0 due to ZeroDivisionError
-            # Smooth denominator to avoid zero denominator
-            pred_dict[this_label] += 1./(distance+smooth)
-
-        else:
-            pred_dict[this_label] += 1
-
-    # return the majority class label
-    return sorted(pred_dict, key=pred_dict.get)[-1]
+    
+    sort_dist = DCpairs[DCpairs[:,0].argsort()]
+    k_entries = sort_dist[0:k]
+    kClsList = list(k_entries[:,1])
+    return int(max(set(kClsList), key=kClsList.count))
+    
+    
+#def vote(knns, weighted=False, smooth=1):
+ #   '''
+  #      Return predictions by voting
+   #     Default: Equal weights for all neighbours
+    #'''
+#
+ #   # binary class
+  #  pred_dict = {0: 0., 1:0.}
+   # for n_i in knns:
+    #    this_label = int(n_i[1])
+#
+ #       if weighted:
+  #          # weight inversely proportional to distance
+   #         distance = float(n_i[-1])
+    #        # separate distance 0 due to ZeroDivisionError
+     #       # Smooth denominator to avoid zero denominator
+      #      pred_dict[this_label] += 1./(distance+smooth)
+#
+ #       else:
+  #          pred_dict[this_label] += 1
+#
+ #   # return the majority class label
+  #  return sorted(pred_dict, key=pred_dict.get)[-1]
 
 def cdist(u, F, C, k, norm=2):
     '''
