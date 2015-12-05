@@ -12,4 +12,6 @@ sc = SparkContext()
 x, y = get_image_rdd(sc, n_groups=5, start=0, end=10)
 x_, y_ = get_image_rdd(sc, start=10, end=11)
 
+knn = KNN(x,y)
+
 sc.stop()
