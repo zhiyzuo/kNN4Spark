@@ -14,13 +14,15 @@ From Joel: Dataset Description (Without resizing)
 - 9x9 block samples: 521,207,827
 - Total number of skin pixels: 16.77%
 
-##### To do List (12/03/15):
+##### To do List (12/05/15):
 
-* Sampling?
+* Separate data into features and labels, with the same indices.
 
-* Is it appropriate to do resize?
+* To reduce the number of samples, we do resizing on images. Predictions will be reshaped to the original size and save as images using [`PIL.Image.fromarray(obj, mode=None)`](http://pillow.readthedocs.org/en/3.0.x/reference/Image.html).
 
-* Output confusion matrix in text format onto disk.
+* For each image, for its every pixel `p` (as RDD object), do `p.cartesian(train_rdd)` where `train_rdd` is reorgainzed to a `n1 x n2` matrix from a `1 x n` vector where `n1 x n2 == n`.
+
+* Output confusion matrix in text format along with the binary image onto disk.
 
 #### Strategies employed so far:
 
