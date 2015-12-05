@@ -114,10 +114,12 @@ def cdist(u, A, C, k, norm=2):
     distance_vector = dist(u, A)
     smallest_k = sorted(distance_vector, key=lambda x: x[1])[:k]
 
+    result = []
     for item in smallest_k:
-        # find its class by index (1st element)
-        cls = C[idx][item[0]]
-        result.append((item[1], cls))
+        i_, d_ = item
+        for element in C[1]:
+            if element[0] == i_:
+                result.append((d_, element[1]))
 
     return result
 
