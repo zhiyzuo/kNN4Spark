@@ -36,26 +36,13 @@ class KNN(object):
             length = other_data.count()
 
         # Create pair: each test point is associated with a subgroup of train data
-        pairs = other_data.cartesian(self.data).collect()
+        pairs = other_data.cartesian(self.data_feature)
         # loop through each pair
         for test_idx in range(length):
-            # get subset of this test index
-            idx_pair = pairs.filter(lambda (testpoint, trainsubgroup): testpoint[0] == test_idx)
+            # get subset of this test index; collect to do for loop
+            idx_pair = pairs.filter(lambda (testpoint, trainsubgroup): testpoint[0] == test_idx).collect()
+            temp_result = cdist(idx_pair)
 
-
-        # Applies euclidean distance function to all pairs
-        norm = self.norm
-        pointED = pairs.map(lambda x: get_distance(x, norm))
-        # Creates key value pair where key is index1
-        KVpair = pointED.map(lambda x: (x[0],x[1:]))
-        # Group distances for each key
-        distRDD = KVpair.groupByKey().mapValues(list)
-        
-        # Find k Nearest Neighbours
-        k = int(self.k)
-        sortedDistRDD = distRDD.map(lambda (idx, arr) : (idx, find_neighbours(arr, k)))
-        weighted, smooth = self.weighted, self.smooth
-        predictionRDD = sortedDistRDD.map(lambda (idx, knns) : (idx, vote(knns, weighted, smooth)))
         return predictionRDD
 
     def test(self, test_data, test_label):
