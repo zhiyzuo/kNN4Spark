@@ -7,6 +7,8 @@ from utils import get_distance, vote, find_neighbours, get_confusion_matrix, get
 sc = SparkContext()
 
 x, y = get_image_rdd(sc, n_groups=5, n_=10)
+print [(p, q) for (p, q) in x.collect()]
+print [(p, q) for (p, q) in y.collect()]
 
 sc.stop()
 
