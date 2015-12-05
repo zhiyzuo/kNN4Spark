@@ -14,6 +14,8 @@ def slice_list(data_list, num):
 def get_image_rdd(sc, n_=100, resize=99):
     '''
         Retrieve pixels as RDDs from images
+
+        Update on 12/05/15: return (index, feature) and (index, label)
     '''
 
     import os
@@ -26,9 +28,10 @@ def get_image_rdd(sc, n_=100, resize=99):
 
     RDDind = pixelsRDD.zipWithIndex()
     indRDD = RDDind.map(lambda (data,index):(index,data))
-    indClassFeat = indRDD.map(lambda (index,data): (index,data[-1],data[:-1]))
+    index_feature = indRDD.map(lambda (index,data): (index,data[:-1]))
+    index_label = indRDD.map(lambda (index,data): (index,data[-1]))
 
-    return indClassFeat
+    return index_feature, index_label
 
 
 def get_confusion_matrix(pred, true, see=True):
