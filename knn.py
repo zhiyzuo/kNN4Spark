@@ -31,6 +31,7 @@ class KNN(object):
 
             length is the length of other_data
         '''
+        from utils import cdist,vote
 
         if length == None:
             length = other_data.count()
@@ -38,12 +39,20 @@ class KNN(object):
         # Create pair: each test point is associated with a subgroup of train data
         pairs = other_data.cartesian(self.data_feature)
         # loop through each pair
+        dist_label_tuple_list = []
+        predictions = []
         for test_idx in range(length):
             # get subset of this test index; collect to do for loop
-            idx_pair = pairs.filter(lambda (testpoint, trainsubgroup): testpoint[0] == test_idx).collect()
-            temp_result = cdist(idx_pair)
-
-        return predictionRDD
+            idx_pairs = pairs.filter(lambda (testpoint, trainsubgroup): testpoint[0] == test_idx).collect()
+            for idx_p in idx_pairs:
+                # find out the train subgroup
+                train_subgroup_idx = idx_pairs[1][0]
+                # Their Class
+                C = self.data_label.filter(lambda (ind, subgroup): ind == train_subgroup_idx).collect()
+                dist_label_tuple_list.extend(cdist(idx_p[0], idx_p[1], C, self.k))
+            predictions.append(vote(dist_label_tuple_list))
+ 
+        return predictions
 
     def test(self, test_data, test_label):
         '''test_data should also be a RDD object'''
