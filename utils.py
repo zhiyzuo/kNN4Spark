@@ -1,27 +1,16 @@
-def slice(data_list, new_shape):
-    '''
-        Collects the output of processImage and splits
-        Update on 12/05/12:
-        @param
-        data_list: a vector/matrix of data
-        reshape: the desired shape (a tuple)
-    '''
 
-    import numpy as np
-    data = np.asarray(data_list)
-    reshaped_data = data.reshape(new_shape)
-
-    return reshaped_data
-
-
-def get_image_rdd(sc, n_=100, resize=0.1):
+def get_image_rdd(sc, n_groups=None, n_=10, resize=0.1):
     '''
         Retrieve pixels as RDDs from images
+        Also do reshape to n_groups of train data
 
-        Update on 12/05/15: return (index, feature) and (index, label)
+        Update on 12/05/15: 
+            return (index, feature) and (index, label)
+            if n_groups != None, return reshaped features and labels
     '''
 
     import os
+    import numpy as np
     from processImage import processImage
 
 
@@ -34,8 +23,13 @@ def get_image_rdd(sc, n_=100, resize=0.1):
     index_feature = indRDD.map(lambda (index,data): (index,data[:-1]))
     index_label = indRDD.map(lambda (index,data): (index,data[-1]))
 
-    return index_feature, index_label
-
+    if n_groups == None:
+        return index_feature, index_label
+    
+    # Do reshape
+    regroup_feature = index_feature.groupBy(lambda x: x[0] % n_groups)
+    regroup_label = index_label.groupBy(lambda x: x[0] % n_groups)
+    return regroup_feature, regroup_label
 
 def get_confusion_matrix(pred, true, see=True):
     import numpy as np
