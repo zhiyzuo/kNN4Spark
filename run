@@ -1,3 +1,3 @@
 #!/bin/sh
 
-nohup spark-submit knn.py --driver-memory 8g > logfile &
+nohup spark-submit test.py --driver-memory 8g > logfile &
