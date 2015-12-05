@@ -51,18 +51,17 @@ class KNN(object):
                 C = self.data_label.filter(lambda (ind, subgroup): ind == train_subgroup_idx).collect()[0]
                 dist_label_tuple_list.extend(cdist(idx_p[0], idx_p[1], C, self.k))
             predictions.append((test_idx, vote(dist_label_tuple_list, self.k)))
+            del idx_pairs
  
         return predictions
 
     def test(self, test_data, test_label):
         '''test_data should also be a RDD object'''
-        predictionRDD = self.predict(test_data)
+        pred_tuple = self.predict(test_data)
 
         # Get actual labels
-        actualClassRDD = test_label
-
-        pred_tuple = predictionRDD.collect()
-        true_tuple = actualClassRDD.collect()
+        # Flatten the test_label RDD
+        true_tuple = test_label.flatMap(lambda (ind, l):l).collect()
 
         pred, true = np.zeros(len(pred_tuple)), np.zeros(len(pred_tuple)) 
         for i in range(len(pred)):
