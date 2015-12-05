@@ -1,5 +1,5 @@
 
-def get_image_rdd(sc, n_groups=None, n_=10, resize=0.1):
+def get_image_rdd(sc, n_groups=None, start=0, end=10, resize=0.1):
     '''
         Retrieve pixels as RDDs from images
         Also do reshape to n_groups of train data
@@ -15,7 +15,7 @@ def get_image_rdd(sc, n_groups=None, n_=10, resize=0.1):
 
 
     images = os.listdir("../Original/train/")
-    imgsRDD = sc.parallelize(images[:n_])
+    imgsRDD = sc.parallelize(images[start:end])
     pixelsRDD = imgsRDD.flatMap(lambda x : processImage(x, resizeTo=resize))
 
     RDDind = pixelsRDD.zipWithIndex()

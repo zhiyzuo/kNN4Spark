@@ -6,9 +6,10 @@ from utils import get_distance, vote, find_neighbours, get_confusion_matrix, get
 
 sc = SparkContext()
 
+# train data
+# Each element in x and y is (SubGroupKey, iterableResults)
+# in which iterableResults are (PixelKey, features/labels)
 x, y = get_image_rdd(sc, n_groups=5, n_=10)
-print [(p, q) for (p, q) in x.collect()]
-print [(p, q) for (p, q) in y.collect()]
 
 sc.stop()
 
