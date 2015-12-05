@@ -126,6 +126,11 @@ if __name__ == '__main__':
     sc = SparkContext()
 
     indClassFeat = get_image_rdd(sc, n_=1000)
+    
+    flatten = indClassFeat.flatMap(lambda x:x)
+    flatten_list = flatten.collect()
+    data_slices = slice_list(flatten_list,100)
+    slicesRDD = sc.parallelize(data_slices)
 
     knn = KNN(indClassFeat)
     #knn.loo()
