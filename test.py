@@ -9,7 +9,7 @@ sc = SparkContext()
 # train data
 # Each element in x and y is (SubGroupKey, iterableResults)
 # in which iterableResults are (PixelKey, features/labels)
-x, y = get_image_rdd(sc, n_groups=5, n_=10)
+x, y = get_image_rdd(sc, n_groups=5, start=0, end=10)
 
 sc.stop()
 
