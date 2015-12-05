@@ -1,3 +1,16 @@
+def slice_list(data_list, num):
+    '''
+        Collects the output of processImage and splits
+    '''
+    avg = len(data_list) / float(num)
+    slices = []
+    position = 0.0
+    while position < len(data_list):
+        slices.append(data_list[int(position):int(position + avg)])
+        position += avg
+    return slices
+
+
 def get_image_rdd(sc, n_=100, resize=99):
     '''
         Retrieve pixels as RDDs from images
