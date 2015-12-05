@@ -103,11 +103,11 @@ def cdist(u, F, C, k, norm=2):
 
     # return result, which is an array of tuples (dist, label)
     result = []
-    for idx in A.shape[0]:
+    for idx in F.shape[0]:
         # for each subgroup of trainings
-        A_ = A[idx]
+        F_ = F[idx]
         # vector of ditances: (index, distance)
-        d_ = dist(u, A_, norm)
+        d_ = dist(u, F_, norm)
         # get the smallest k for each subgroup; sorted by distance (2nd element)
         smallest_k = sorted(d_, key=lambda x:x[1])[:k]
 
