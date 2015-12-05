@@ -155,7 +155,7 @@ def dist_(u, v, norm=2):
     uf, vf = u[1], v[1]
     d = np.linalg.norm(np.asarray(uf) - np.asarray(vf), norm)
     # cast to 16-bit floating point
-    return tuple([vi, np.float16(d)])
+    return (vi, d)
 
 '''
 def get_distance(p, norm=2):
