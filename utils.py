@@ -65,7 +65,9 @@ def vote (DCpairs, k):
         Sorts distance, class pairs
         Returns majority class given k
     '''
+    import numpy as np
     
+    DCpairs = np.asarray(DCpairs)
     sort_dist = DCpairs[DCpairs[:,0].argsort()]
     k_entries = sort_dist[0:k]
     kClsList = list(k_entries[:,1])

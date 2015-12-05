@@ -46,11 +46,11 @@ class KNN(object):
             idx_pairs = pairs.filter(lambda (testpoint, trainsubgroup): testpoint[0] == test_idx).collect()
             for idx_p in idx_pairs:
                 # find out the train subgroup
-                train_subgroup_idx = idx_pairs[1][0]
+                train_subgroup_idx = idx_p[1][0]
                 # Their Class
                 C = self.data_label.filter(lambda (ind, subgroup): ind == train_subgroup_idx).collect()
                 dist_label_tuple_list.extend(cdist(idx_p[0], idx_p[1], C, self.k))
-            predictions.append(vote(dist_label_tuple_list))
+            predictions.append((test_idx, vote(dist_label_tuple_list, self.k)))
  
         return predictions
 
