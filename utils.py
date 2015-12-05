@@ -84,55 +84,66 @@ def vote(knns, weighted=False, smooth=1):
     # return the majority class label
     return sorted(pred_dict, key=pred_dict.get)[-1]
 
-def find_neighbours(dist_array, k=1):
-    '''
-        Find the closest neighbours and 
-        return their indices, class labels, and distances (for weighted voting)
-    '''
-
-    import numpy as np
-    ind_dist_dict = {}
-    info_dict = {}
-    for item in dist_array:
-        ind_dist_dict[item[0]] = item[-1]
-        info_dict[item[0]] = item[1:]
-    top_k_indices = sorted(ind_dist_dict, key=ind_dist_dict.get)[:k]
-    
-    # return near neighbours along with their labels
-
-    # distinguish train and test
-    if len(dist_array[0]) < 4:
-        label_index = 0
-    else:
-        label_index = 1
-
-    k_neighbors = [(idx, info_dict[idx][label_index], info_dict[idx][-1]) for idx in top_k_indices]
-
-    return k_neighbors
-
-def cdist(u, A, norm=2):
+def cdist(u, F, C, k, norm=2):
     '''
         Calcualte the distance between
-        vector u and matrix A with norm = 2
+        vector u and matrix F with norm = 2
+        
+        @param
+        u: test point feature (index, feature);
+        F: training features array of (index, feature);
+        C: training labels array of (index, label);
+        k: # of nearest neighoubour
     '''
 
     import numpy as np
     u = np.asarray(u)
-    A = np.asarray(A)
-    distance_vector = np.zeros(A.shape[0])
-    for idx in A.shape[0]:
-        v = A[idx]
-        distance_vector[idx] = dist(u,v)
-       
-    return distance_vector
-        
+    F = np.asarray(F)
+    C = np.asarray(C)
 
-def dist(u, v, norm=2):
+    # return result, which is an array of tuples (dist, label)
+    result = []
+    for idx in A.shape[0]:
+        # for each subgroup of trainings
+        A_ = A[idx]
+        # vector of ditances: (index, distance)
+        d_ = dist(u, A_, norm)
+        # get the smallest k for each subgroup; sorted by distance (2nd element)
+        smallest_k = sorted(d_, key=lambda x:x[1])[:k]
+
+        for item in smallest_k:
+            # find its class by index (1st element)
+            cls = C[idx][item[0]]
+            result.append((item[1], cls))
+
+    return result
+
+def dist(u, A, norm=2):
+    import numpy as np
+    u = np.asarray(u)
+    A = np.asarray(A)
+    distance_vector = []
+    for idx in range(A.shape[0]):
+        v = A[idx]
+        distance_vector.append(dist_(u, v, norm))
+    return distance_vector
+
+def dist_(u, v, norm=2):
     '''
         Calculate distance between u and v
-    '''
 
-    return np.linalg.norm(np.asarray(u) - np.asarray(v), norm)
+        @param
+        u, v: (index, feature)
+
+        ** return the second index
+    '''
+    import numpy as np
+
+    ui, vi = u[0], v[0]
+    uf, vf = u[1], v[1]
+    d = np.linalg.norm(np.asarray(uf) - np.asarray(vf), norm)
+    # cast to 16-bit floating point
+    return tuple([vi, np.float16(d)])
 
 '''
 def get_distance(p, norm=2):
@@ -154,4 +165,27 @@ def get_distance(p, norm=2):
         return (i1,i2,c2,dist)
     else:
         return (i1,i2,c1,c2,dist)
+
+def find_neighbours(dist_array, k=1):
+
+    import numpy as np
+    ind_dist_dict = {}
+    info_dict = {}
+    for item in dist_array:
+        ind_dist_dict[item[0]] = item[-1]
+        info_dict[item[0]] = item[1:]
+    top_k_indices = sorted(ind_dist_dict, key=ind_dist_dict.get)[:k]
+    
+    # return near neighbours along with their labels
+
+    # distinguish train and test
+    if len(dist_array[0]) < 4:
+        label_index = 0
+    else:
+        label_index = 1
+
+    k_neighbors = [(idx, info_dict[idx][label_index], info_dict[idx][-1]) for idx in top_k_indices]
+
+    return k_neighbors
+
 '''
