@@ -57,6 +57,8 @@ class KNN(object):
 
     def test(self, test_data, test_label):
         '''test_data should also be a RDD object'''
+
+        import numpy as np
         pred_tuple = self.predict(test_data)
 
         # Get actual labels
