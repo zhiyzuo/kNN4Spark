@@ -36,11 +36,11 @@ for imageName in imageNames:
             resizedSize= width, height
             copyImage.thumbnail(resizedSize,PIL.Image.ANTIALIAS)
             width,height = copyImage.size
-            copyImage.close()
         else:
             width = originalWidth
             height = originalHeight
-
+            
+        copyImage.close()
         width = float(width)
         height = float(height)
         #print resize, width,height
