@@ -62,8 +62,7 @@ class KNN(object):
         pred_tuple = self.predict(test_data)
 
         # Get actual labels
-        # Flatten the test_label RDD
-        true_tuple = test_label.flatMap(lambda (ind, l):l).collect()
+        true_tuple = test_label.collect()
 
         pred, true = np.zeros(len(pred_tuple)), np.zeros(len(pred_tuple)) 
         for i in range(len(pred)):
