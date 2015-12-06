@@ -59,6 +59,7 @@ class KNN(object):
         '''test_data should also be a RDD object'''
 
         import numpy as np
+        from utils import get_confusion_matrix
         pred_tuple = self.predict(test_data)
 
         # Get actual labels
