@@ -41,7 +41,7 @@ class KNN(object):
         # Create pair: each test point is associated with a subgroup of train data
         pairs = other_data.cartesian(self.data_feature)
         predictions = []
-        for test_idx in intv:
+        for test_idx in _intv:
             dist_label_tuple_list = []
             # get subset of this test index; collect to do for loop
             idx_pairs = pairs.filter(lambda (testpoint, trainsubgroup): testpoint[0] == test_idx).collect()
