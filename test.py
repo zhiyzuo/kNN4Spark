@@ -1,17 +1,38 @@
 import numpy as np
 from knn import KNN
+#from pyspark.sql import *
 from pyspark import SparkConf, SparkContext
 from utils import cdist, vote, get_confusion_matrix, get_image_rdd
 
 sc = SparkContext()
+sqlContext = SQLContext(sc)
 
 # train data
 # Each element in x and y is (SubGroupKey, iterableResults)
 # in which iterableResults are (PixelKey, features/labels)
 x, y = get_image_rdd(sc, n_groups=100, start=0, end=1)
 
-#x_, y_ = get_image_rdd(sc, start=10, end=11)
+# knn model
+knn = KNN(x,y)
 
+# test data
+x_, y_ = get_image_rdd(sc, start=10, end=11)
+x_list, y_list = x_.collect(), y_.collect()
+cm = np.matlib.zeros((4,4), dtype=float)
+# iterate 10 pixels at a time
+flag = True
+while flag:
+    x__, y__ = x_list[:10], y_list[:10]
+    x_list[:10] = []
+    y_list[:10] = []
+    cm__ = knn.predict(x__, y__)
+    cm = cm + cm__
+    if len(x_list) < 1:
+        flag = False
+
+sc.stop()
+
+'''
 x_ = np.array([[ 42,  60,  93,  38,  56,  88,  37,  55,  86,  42,  60,  92,  45,\
 64,  95,  45,  63,  95,  44,  64,  97,  43,  64,  97,  52,  60,\
 85, 199, 160, 152, 206, 164, 160, 182, 126, 122,  43,  64,  96,\
@@ -35,9 +56,4 @@ y_ = d.map(lambda (d_,i_):(i_,d_[-1]))
 print x_.collect()
 print y_.collect()
 
-
-knn = KNN(x,y)
-print knn.predict(x_)
-print knn.test(x_, y_)
-
-sc.stop()
+'''
