@@ -3,6 +3,8 @@
 
 Test the code: `spark-submit knn.py`
 
+Chang temp file directory: `export _JAVA_OPTIONS=-Djava.io.tmpdir=/you/tmpdir/`
+
 ##### Updates on 12/03/15:
 
 I tried to use flatMap to directly input images and output pixels. It takes 40s to index and 40s to count for 100 images.
