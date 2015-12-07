@@ -28,8 +28,8 @@ while flag:
     y_list[:10] = []
     x__ = sc.parallelize(x__)
     y__ = sc.parallelize(y__)
-    cm__ = knn.test(x__, y__, range(counter, counter+2))
-    counter += 2
+    cm__ = knn.test(x__, y__, range(counter, counter+10))
+    counter += 10
     cm = cm + cm__
     if len(x_list) < 1:
         flag = False
