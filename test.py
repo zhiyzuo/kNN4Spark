@@ -18,7 +18,7 @@ knn = KNN(x,y)
 x_, y_ = get_image_rdd(sc, start=10, end=11)
 x_list, y_list = x_.collect(), y_.collect()
 del x_, y_
-cm = numpy.matlib.zeros((4,4), dtype=float)
+cm = numpy.matlib.zeros((2,2), dtype=float)
 # iterate 10 pixels at a time
 flag = True
 counter = 0
