@@ -12,7 +12,9 @@ for eachImage in data:
 
 #TODO: use this to find the array for the image in order to get dimensions
 original = collectImageDimensions[np.where(np.array(collectImageDimensions) == 'im01986.jpg')[0][0]]
+#output is a list [<image_name>, <original_width>, <original_height>]
 
+#TODO: im = PIL.Image.new('L', (original[1],original[2])) #L means 8bit black or white
 #TODO: put data into an image the size of the predicted binary matrix
 #TODO: that is im.putdata([0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150])
 #TODO: upscale the binary matrix 
@@ -26,7 +28,7 @@ original = collectImageDimensions[np.where(np.array(collectImageDimensions) == '
 #http://www.pythonware.com/media/data/pil-handbook.pdf
 #http://stackoverflow.com/questions/2111150/create-a-grayscale-image
 #http://www.cs.uregina.ca/Links/class-info/325/PythonPictures/#Grayscale
-##backToOrigImBW = PIL.Image.new('L', (original[1],original[2])) #L means 8bit black or white
+##im = PIL.Image.new('L', (original[1],original[2])) #L means 8bit black or white
 ##im.putdata([0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150,0,150])
 ##bw = im.point(lambda x: 0 if x<128 else 255, '1')
 ##
