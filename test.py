@@ -1,16 +1,15 @@
 import numpy as np
+import numpy.matlib
 from knn import KNN
-#from pyspark.sql import *
 from pyspark import SparkConf, SparkContext
 from utils import cdist, vote, get_confusion_matrix, get_image_rdd
 
 sc = SparkContext()
-sqlContext = SQLContext(sc)
 
 # train data
 # Each element in x and y is (SubGroupKey, iterableResults)
 # in which iterableResults are (PixelKey, features/labels)
-x, y = get_image_rdd(sc, n_groups=100, start=0, end=1)
+x, y = get_image_rdd(sc, n_groups=1000, start=0, end=1300)
 
 # knn model
 knn = KNN(x,y)
@@ -18,17 +17,25 @@ knn = KNN(x,y)
 # test data
 x_, y_ = get_image_rdd(sc, start=10, end=11)
 x_list, y_list = x_.collect(), y_.collect()
-cm = np.matlib.zeros((4,4), dtype=float)
+del x_, y_
+cm = numpy.matlib.zeros((4,4), dtype=float)
 # iterate 10 pixels at a time
 flag = True
+counter = 0
 while flag:
     x__, y__ = x_list[:10], y_list[:10]
     x_list[:10] = []
     y_list[:10] = []
-    cm__ = knn.predict(x__, y__)
+    x__ = sc.parallelize(x__)
+    y__ = sc.parallelize(y__)
+    cm__ = knn.test(x__, y__, range(counter, counter+2))
+    counter += 2
     cm = cm + cm__
     if len(x_list) < 1:
         flag = False
+    del cm__, x__, y__
+
+print cm
 
 sc.stop()
 
