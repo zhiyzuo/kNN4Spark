@@ -1,4 +1,4 @@
-def processImage(imageName, blockSideSize=7, resizeTo = None):
+def processImage(imageName, blockSideSize=7, resizeTo = None, test = 0):
     '''
         Update on 12/05/15: Change the resize feature to be a ratio
     '''
@@ -65,9 +65,15 @@ def processImage(imageName, blockSideSize=7, resizeTo = None):
                     partialSampleIndex = partialSampleIndex+imSizeRGB
             partialSample[0,partialSampleIndex:partialSampleIndex+imSizeRGB] = np.array(pixels[x,y])#for the middle point (same as when block side size is 1) 
             sample[0,0:numOfColsPerPartialSample]=partialSample
-            sample[0,numOfColumnsPerSample-1] = isSkin
-            samples[currentSample,:]= sample
+            if test==1:
+                partialSamples[currentSample,:] = partialSample
+            else
+                sample[0,numOfColumnsPerSample-1] = isSkin
+                samples[currentSample,:]= sample
+                isSkin=1;
             currentSample=currentSample+1;
-            isSkin=1;
+            
+    if test==1
+        samples = partialSamples
     
     return (np.asarray(samples, dtype=np.uint8))
