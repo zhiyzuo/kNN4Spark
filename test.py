@@ -20,6 +20,7 @@ x_, y_ = get_image_rdd(sc, start=10, end=11)
 x_list, y_list = x_.collect(), y_.collect()
 del x_, y_
 cm = numpy.matlib.zeros((2,2), dtype=float)
+pred = []
 # iterate 10 pixels at a time
 flag = True
 counter = 0
@@ -29,16 +30,23 @@ while flag:
     y_list[:10] = []
     x__ = sc.parallelize(x__)
     y__ = sc.parallelize(y__)
-    cm__ = knn.test(x__, y__, range(counter, counter+10))
+
+    pred__, cm__ = knn.test(x__, y__, range(counter, counter+10))
     counter += 10
+
+    pred.extend(pred__)
     cm = cm + cm__
     print 'Print cm', cm
     if len(x_list) < 1:
         flag = False
-    del cm__, x__, y__
+    del pred__, cm__, x__, y__
 
 print cm
 np.savetxt('./conf_mat.txt', cm)
+
+pred_ = np.asarray([item[1] for item in pred])
+np.savetxt('./predictions.txt', pred_)
+
 
 sc.stop()
 
