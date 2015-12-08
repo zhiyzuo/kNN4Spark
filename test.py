@@ -13,6 +13,7 @@ x, y = get_image_rdd(sc, n_groups=1000, start=0, end=1300)
 
 # knn model
 knn = KNN(x,y)
+del x, y
 
 # test data
 x_, y_ = get_image_rdd(sc, start=10, end=11)
@@ -31,11 +32,13 @@ while flag:
     cm__ = knn.test(x__, y__, range(counter, counter+10))
     counter += 10
     cm = cm + cm__
+    print 'Print cm', cm
     if len(x_list) < 1:
         flag = False
     del cm__, x__, y__
 
 print cm
+np.savetxt('./conf_mat.txt', cm)
 
 sc.stop()
 
