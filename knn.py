@@ -79,5 +79,5 @@ class KNN(object):
                 pred[_intv.index(idx)] = int(cl)
 
         confusion_matrix = get_confusion_matrix(pred, true)
-        return confusion_matrix
+        return pred_tuple, confusion_matrix
 
