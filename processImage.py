@@ -46,8 +46,8 @@ def processImage(imageName, blockSideSize=7, resizeTo = None, test = 0, val=0):
     isSkin = 1
     currentSample=0
 
-    for x in  range(0+fringePixels,imSizeX-fringePixels):
-        for y in range(0+fringePixels,imSizeY-fringePixels):
+    for y in range(0+fringePixels,imSizeY-fringePixels):
+        for x in  range(0+fringePixels,imSizeX-fringePixels):
             if ((np.array(skinPixels[x,y])==255).all()):
                     isSkin=np.uint8(0)
             partialSampleIndex = 0
