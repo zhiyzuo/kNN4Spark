@@ -1,4 +1,4 @@
-def processImage(imageName, blockSideSize=7, resizeTo = None, test = 0):
+def processImage(imageName, blockSideSize=7, resizeTo = None, test = 0, val=0):
     '''
         Update on 12/05/15: Change the resize feature to be a ratio
     '''
@@ -7,8 +7,13 @@ def processImage(imageName, blockSideSize=7, resizeTo = None, test = 0):
     import math
     import PIL.Image 
     
-    imagePath  = "../Original/train/"+imageName
-    skinPath = "../Skin/train/"+imageName[0:-4]+"_s.bmp"
+    if val == 1:
+        imagePath  = "../Original/val/"+imageName
+        skinPath = "../Skin/val/"+imageName[0:-4]+"_s.bmp"
+    else:
+        imagePath  = "../Original/train/"+imageName
+        skinPath = "../Skin/train/"+imageName[0:-4]+"_s.bmp"
+
     skin = PIL.Image.open(skinPath)
     image = PIL.Image.open(imagePath)
     imSizeX,imSizeY = image.size
@@ -67,13 +72,13 @@ def processImage(imageName, blockSideSize=7, resizeTo = None, test = 0):
             sample[0,0:numOfColsPerPartialSample]=partialSample
             if test==1:
                 partialSamples[currentSample,:] = partialSample
-            else
+            else:
                 sample[0,numOfColumnsPerSample-1] = isSkin
                 samples[currentSample,:]= sample
                 isSkin=1;
             currentSample=currentSample+1;
             
-    if test==1
+    if test==1:
         samples = partialSamples
     
     return (np.asarray(samples, dtype=np.uint8))

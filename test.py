@@ -16,9 +16,10 @@ knn = KNN(x,y)
 del x, y
 
 # test data
-x_, y_ = get_image_rdd(sc, start=10, end=11)
+x_, y_ = get_image_rdd(sc, val=1)
 x_list, y_list = x_.collect(), y_.collect()
 del x_, y_
+print 'Length of x_list', len(x_list)
 cm = numpy.matlib.zeros((2,2), dtype=float)
 pred = []
 # iterate 10 pixels at a time

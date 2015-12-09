@@ -1,5 +1,5 @@
 
-def get_image_rdd(sc, n_groups=None, start=0, end=10, resize=0.1):
+def get_image_rdd(sc, n_groups=None, start=0, end=10, resize=0.1, val=0):
     '''
         Retrieve pixels as RDDs from images
         Also do reshape to n_groups of train data
@@ -13,24 +13,38 @@ def get_image_rdd(sc, n_groups=None, start=0, end=10, resize=0.1):
     import numpy as np
     from processImage import processImage
 
+    if val == 1:
+        images = ["im01453.jpg"]
 
-    images = os.listdir("../Original/train/")
-    imgsRDD = sc.parallelize(images[start:end])
-    pixelsRDD = imgsRDD.flatMap(lambda x : processImage(x, resizeTo=resize))
+        imgsRDD = sc.parallelize(images)
+        pixelsRDD = imgsRDD.flatMap(lambda x : processImage(x, resizeTo=resize, val=1))
 
-    RDDind = pixelsRDD.zipWithIndex()
-    indRDD = RDDind.map(lambda (data,index):(index,data))
-    index_feature = indRDD.map(lambda (index,data): (index,data[:-1]))
-    index_label = indRDD.map(lambda (index,data): (index,data[-1]))
+        RDDind = pixelsRDD.zipWithIndex()
+        indRDD = RDDind.map(lambda (data,index):(index,data))
+        index_feature = indRDD.map(lambda (index,data): (index,data[:-1]))
+        index_label = indRDD.map(lambda (index,data): (index,data[-1]))
 
-    if n_groups == None:
         return index_feature, index_label
-    
-    # Do reshape
-    # Do a following map to convert from resultiterable to list
-    regroup_feature = index_feature.groupBy(lambda x: x[0] % n_groups).map(lambda (idx, x): (idx, sorted(x)))
-    regroup_label = index_label.groupBy(lambda x: x[0] % n_groups).map(lambda (idx, x): (idx, sorted(x)))
-    return regroup_feature, regroup_label
+
+    else:
+        images = os.listdir("../Original/train/")
+
+        imgsRDD = sc.parallelize(images[start:end])
+        pixelsRDD = imgsRDD.flatMap(lambda x : processImage(x, resizeTo=resize))
+
+        RDDind = pixelsRDD.zipWithIndex()
+        indRDD = RDDind.map(lambda (data,index):(index,data))
+        index_feature = indRDD.map(lambda (index,data): (index,data[:-1]))
+        index_label = indRDD.map(lambda (index,data): (index,data[-1]))
+
+        if n_groups == None:
+            return index_feature, index_label
+        
+        # Do reshape
+        # Do a following map to convert from resultiterable to list
+        regroup_feature = index_feature.groupBy(lambda x: x[0] % n_groups).map(lambda (idx, x): (idx, sorted(x)))
+        regroup_label = index_label.groupBy(lambda x: x[0] % n_groups).map(lambda (idx, x): (idx, sorted(x)))
+        return regroup_feature, regroup_label
 
 def get_confusion_matrix(pred, true, see=True):
     import numpy as np
